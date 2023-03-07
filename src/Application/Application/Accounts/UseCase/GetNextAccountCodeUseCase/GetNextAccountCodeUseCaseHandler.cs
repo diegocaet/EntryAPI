@@ -12,20 +12,64 @@ namespace Application.Accounts.UseCase.GetNextAccountCodeUseCase
         }
         public async Task<GetNextAccountCodeUseCaseResponse> Handle(GetNextAccountCodeUseCaseRequest request, CancellationToken cancellationToken)
         {
-            var result = await _accountRepository.GetNext(request.ParentAccount);
-            if (result == null) 
+            try
             {
+                var result = await _accountRepository.GetLastByParentAccount(request.ParentAccount);
+                if (result == 0)
+                {
+                    return null;
+                }
+
+                if (result == 999)
+                {
+                    var parentSequences = request.ParentAccount.Split(".");
+                    
+                    for (var i = parentSequences.Length; i >= 0; i--)
+                    {
+                        if (i == 0)
+                        {
+                            var _ = await _accountRepository.GetLastByParentAccount("");
+                            if (_ < 999)
+                            {
+                                var filho = await _accountRepository.GetLastByParentAccount(_.ToString());
+                                if (filho < 999)
+                                    return new GetNextAccountCodeUseCaseResponse(filho + 1, string.Format($"{_}.{filho + 1}"));
+
+                                return new GetNextAccountCodeUseCaseResponse(_ + 1, string.Format($"{_ + 1}"));
+                            }
+                        }
+
+                        if (parentSequences[i - 1] != "999")
+                        {
+                            string newSequence = "";
+
+                            for (var n = 0; n < i; n++)
+                                newSequence += parentSequences[n];
+
+                            var _= await _accountRepository.GetLastByParentAccount(newSequence);
+
+                            if (_ < 999)
+                            {
+                                var filho = await _accountRepository.GetLastByParentAccount(_.ToString());
+                                if (filho < 999)
+                                    return new GetNextAccountCodeUseCaseResponse(filho + 1, string.Format($"{newSequence}.{filho + 1}"));
+
+                                return new GetNextAccountCodeUseCaseResponse(_ + 1, string.Format($"{newSequence}.{_ + 1}"));
+                            }
+
+                        }
+                    }
+                }
+                else
+                {
+                    int nexSequence = result + 1;
+                    return new GetNextAccountCodeUseCaseResponse(nexSequence, string.Format($"{request.ParentAccount}.{nexSequence}"));
+                }
                 return null;
             }
-
-
-            if (result == 10000)
+            catch (Exception ex)
             {
-                return new GetNextAccountCodeUseCaseResponse(1, string.Format($"{ request.ParentAccount }.{1}"));
-            }
-            else
-            {
-                return new GetNextAccountCodeUseCaseResponse(result, string.Format($"{request.ParentAccount}.{result}"));
+                throw new Exception(ex.Message);
             }
         }
     }

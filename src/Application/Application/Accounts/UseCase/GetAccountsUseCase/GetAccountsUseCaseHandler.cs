@@ -13,7 +13,8 @@ namespace Application.Accounts.UseCase.GetAccountsUseCase
         public async Task<GetAccountsUseCaseResponse> Handle(GetAccountsUseCaseRequest request, CancellationToken cancellationToken)
         {
             var result = await _accountRepository.Get(request.ParentAccount, request.Sequence);
-            if (result == null) 
+            
+            if (result == null || !result.Any())
             {
                 return null;
             }

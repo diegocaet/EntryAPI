@@ -1,8 +1,8 @@
 ﻿namespace Application.Accounts.UseCase.GetAccountsUseCase
 {
-    public class DeleteAccountUseCaseResponse
+    public class InsertOrUpdateAccountUseCaseResponse
     {
-        public DeleteAccountUseCaseResponse(int rowsAffected)
+        public InsertOrUpdateAccountUseCaseResponse(int rowsAffected)
         {
             RowsAffected = rowsAffected;
         }

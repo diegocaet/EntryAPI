@@ -5,10 +5,10 @@ namespace Application.Interfaces
 {
     public interface IAccountRepository
     {
-        Task<Account> Get(string? parentAccount, int sequence);
-        Task<IEnumerable<Account>> GetAll();
-        Task<int> GetNext(string? parentAccount);
-        Task InsertOrUpdate(InsertAccountUseCaseRequest account);
-        Task Delete(string? parentAccount, int sequence);
+        Task<IEnumerable<Account>> Get(string? parentAccount, int sequence);
+        Task<Account> GetByCode(string? parentAccount);
+        Task<int> GetLastByParentAccount(string? parentAccount);
+        Task<int> InsertOrUpdate(Account account);
+        Task<int> Delete(string? parentAccount, int sequence);
     }
 }

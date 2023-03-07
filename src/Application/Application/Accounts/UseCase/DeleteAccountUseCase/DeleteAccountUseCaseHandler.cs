@@ -12,9 +12,9 @@ namespace Application.Accounts.UseCase.GetAccountsUseCase
         }
         public async Task<DeleteAccountUseCaseResponse> Handle(DeleteAccountUseCaseRequest request, CancellationToken cancellationToken)
         {
-            await _accountRepository.Delete(request.ParentAccount, request.Sequence);
+            var rows = await _accountRepository.Delete(request.ParentAccount, request.Sequence);
             
-            return new DeleteAccountUseCaseResponse();
+            return new DeleteAccountUseCaseResponse(rows);
 
         }
     }

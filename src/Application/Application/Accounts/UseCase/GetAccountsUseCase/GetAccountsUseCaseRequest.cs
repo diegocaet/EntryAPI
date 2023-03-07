@@ -5,11 +5,19 @@ namespace Application.Accounts.UseCase.GetAccountsUseCase
     {
         public GetAccountsUseCaseRequest(string? parentAccount, int sequence)
         {
-            ParentAccount = parentAccount;
-            Sequence = sequence;
+            if (sequence == 0 && parentAccount.Equals(string.Empty))
+            {
+                ParentAccount = null;
+            }
+            else
+            {
+                ParentAccount = parentAccount;
+                Sequence = sequence;
+            }
         }
 
         public string ParentAccount { get; set; }
         public int Sequence { get; set; }
+
     }
 }
