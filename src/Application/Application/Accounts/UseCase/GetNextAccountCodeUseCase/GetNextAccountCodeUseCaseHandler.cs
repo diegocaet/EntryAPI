@@ -28,14 +28,14 @@ namespace Application.Accounts.UseCase.GetNextAccountCodeUseCase
                     {
                         if (i == 0)
                         {
-                            var _ = await _accountRepository.GetLastByParentAccount("");
-                            if (_ < 999)
+                            var lastSequence = await _accountRepository.GetLastByParentAccount("");
+                            if (lastSequence < 999)
                             {
-                                var filho = await _accountRepository.GetLastByParentAccount(_.ToString());
+                                var filho = await _accountRepository.GetLastByParentAccount(lastSequence.ToString());
                                 if (filho < 999)
-                                    return new GetNextAccountCodeUseCaseResponse(filho + 1, string.Format($"{_}.{filho + 1}"));
+                                    return new GetNextAccountCodeUseCaseResponse(filho + 1, string.Format($"{lastSequence}.{filho + 1}"));
 
-                                return new GetNextAccountCodeUseCaseResponse(_ + 1, string.Format($"{_ + 1}"));
+                                return new GetNextAccountCodeUseCaseResponse(lastSequence + 1, string.Format($"{lastSequence + 1}"));
                             }
                         }
 
@@ -46,15 +46,15 @@ namespace Application.Accounts.UseCase.GetNextAccountCodeUseCase
                             for (var n = 0; n < i; n++)
                                 newSequence += parentSequences[n];
 
-                            var _= await _accountRepository.GetLastByParentAccount(newSequence);
+                            var lastSequence = await _accountRepository.GetLastByParentAccount(newSequence);
 
-                            if (_ < 999)
+                            if (lastSequence < 999)
                             {
-                                var filho = await _accountRepository.GetLastByParentAccount(_.ToString());
+                                var filho = await _accountRepository.GetLastByParentAccount(lastSequence.ToString());
                                 if (filho < 999)
                                     return new GetNextAccountCodeUseCaseResponse(filho + 1, string.Format($"{newSequence}.{filho + 1}"));
 
-                                return new GetNextAccountCodeUseCaseResponse(_ + 1, string.Format($"{newSequence}.{_ + 1}"));
+                                return new GetNextAccountCodeUseCaseResponse(lastSequence + 1, string.Format($"{newSequence}.{lastSequence + 1}"));
                             }
 
                         }
