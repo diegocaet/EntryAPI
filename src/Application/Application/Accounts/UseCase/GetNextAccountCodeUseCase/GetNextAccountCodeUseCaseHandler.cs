@@ -23,7 +23,7 @@ namespace Application.Accounts.UseCase.GetNextAccountCodeUseCase
                 if (result == 999)
                 {
                     var parentSequences = request.ParentAccount.Split(".");
-                    
+
                     for (var i = parentSequences.Length; i >= 0; i--)
                     {
                         if (i == 0)
@@ -44,16 +44,22 @@ namespace Application.Accounts.UseCase.GetNextAccountCodeUseCase
                             string newSequence = "";
 
                             for (var n = 0; n < i; n++)
-                                newSequence += parentSequences[n];
+                            {
+                                if (n == 0)
+                                {
+                                    newSequence += parentSequences[n];
+                                }
+                                else
+                                {
+                                    newSequence += "." + parentSequences[n];
+                                }
+                            }
+
 
                             var lastSequence = await _accountRepository.GetLastByParentAccount(newSequence);
 
                             if (lastSequence < 999)
                             {
-                                var filho = await _accountRepository.GetLastByParentAccount(lastSequence.ToString());
-                                if (filho < 999)
-                                    return new GetNextAccountCodeUseCaseResponse(filho + 1, string.Format($"{newSequence}.{filho + 1}"));
-
                                 return new GetNextAccountCodeUseCaseResponse(lastSequence + 1, string.Format($"{newSequence}.{lastSequence + 1}"));
                             }
 

@@ -15,6 +15,9 @@ namespace Application.Accounts.UseCase.GetAccountsUseCase
         {
             try
             {
+                if (request.Sequence > 999)
+                    throw new HttpRequestException("Sequence inválida."); 
+
                 int rows;
 
                 var account = await _accountRepository.Get(request.ParentAccount, request.Sequence);
@@ -44,6 +47,8 @@ namespace Application.Accounts.UseCase.GetAccountsUseCase
                         
                         if (parentAccount.Type != request.Type)
                             throw new HttpRequestException("Não é possível criar uma conta filha com tipo diferente da conta pai.");
+
+                        
 
                         newAccount.Type = parentAccount.Type;
                         //Deve proibir a criação com tipo diferente ou herdar do pai?

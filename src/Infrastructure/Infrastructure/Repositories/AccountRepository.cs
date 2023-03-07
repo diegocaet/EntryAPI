@@ -1,5 +1,4 @@
-﻿using Application.Accounts.UseCase.GetAccountsUseCase;
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Dapper;
 using Domain.Entities;
 using System.Data.SqlClient;
@@ -8,6 +7,7 @@ namespace Infrastructure.Repositories
 {
     public class AccountRepository : IAccountRepository
     {
+
         public async Task<int> Delete(string? parentAccount, int sequence)
         {
             int rows;
